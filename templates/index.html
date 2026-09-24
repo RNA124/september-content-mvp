@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Контент-фабрика «Сентябрь» — MVP</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="hero">
+    <h1>Контент-фабрика «Сентябрь»</h1>
+    <p>Аудит тематики → выбор маскота → готовый пост для ВКонтакте</p>
+  </header>
+
+  <main class="container">
+    <!-- ШАГ 1: АУДИТ -->
+    <section id="step-audit">
+      <h2 class="section-title">Шаг 1. Мини-аудит тематики</h2>
+      <div class="form-box">
+        <label for="niche">Ниша / тематика</label>
+        <input type="text" id="niche" placeholder="Например: студенты, маркетинг, образование" maxlength="80">
+
+        <label for="audience">Аудитория</label>
+        <input type="text" id="audience" placeholder="Например: студенты 1–2 курса, вузы Красноярска" maxlength="80">
+
+        <label for="product">Продукт или услуга (необязательно)</label>
+        <input type="text" id="product" placeholder="Например: методическое сопровождение, маскоты для бизнеса" maxlength="80">
+
+        <button id="auditBtn" onclick="runAudit()">🔍 Сделать аудит</button>
+      </div>
+
+      <div class="result" id="auditResult">
+        <div class="result-header">
+          <h2>Результат аудита</h2>
+          <span class="badge">рекомендации</span>
+        </div>
+
+        <div class="audit-block">
+          <strong>Рекомендуемые темы:</strong>
+          <ul id="auditTopics"></ul>
+        </div>
+
+        <div class="audit-block">
+          <strong>LSI-термины для постов:</strong>
+          <div class="tags" id="auditLsi"></div>
+        </div>
+
+        <div class="audit-block">
+          <strong>Работающие форматы:</strong>
+          <ul id="auditFormats"></ul>
+        </div>
+
+        <div class="audit-block">
+          <strong>Угол повествования:</strong>
+          <p id="auditAngle"></p>
+        </div>
+
+        <div class="audit-block">
+          <strong>Пробел в контенте:</strong>
+          <p id="auditGap"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ШАГ 2: ВЫБОР МАСКОТА -->
+    <section id="step-mascot" style="display:none;">
+      <h2 class="section-title">Шаг 2. Выбери маскота</h2>
+      <div class="mascots" id="mascots">
+        {% for key, m in mascots.items() %}
+          <div class="mascot-card" data-mascot="{{ key }}" onclick="selectMascot('{{ key }}')">
+            <div class="mascot-icon">
+              {% if key == 'alisa' %}🔵{% elif key == 'archi' %}🟣{% elif key == 'polina' %}👱{% else %}👩‍🏫{% endif %}
+            </div>
+            <h3>{{ m.name }}</h3>
+            <div class="role">{{ m.role }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ШАГ 3: ТЕМА И ГЕНЕРАЦИЯ -->
+    <section id="step-generate" style="display:none;">
+      <h2 class="section-title">Шаг 3. Генерация поста</h2>
+      <div class="form-box">
+        <label for="topic">Тема поста (можно взять из аудита или ввести свою)</label>
+        <input type="text" id="topic" placeholder="Например: как не зубрить ночью перед экзаменом" maxlength="120">
+        <div class="hint">LSI-термины из аудита будут автоматически вплетены в текст.</div>
+
+        <button id="generateBtn" onclick="generatePost()">✨ Сгенерировать пост</button>
+      </div>
+
+      <div class="result" id="postResult">
+        <div class="result-header">
+          <h2 id="resultMascot"></h2>
+          <span class="badge" id="resultBadge"></span>
+        </div>
+        <div class="post-text" id="postText"></div>
+        <div class="actions">
+          <button class="secondary" onclick="copyPost()">📋 Копировать пост</button>
+          <button class="secondary" onclick="generatePost()">🔄 Ещё вариант</button>
+        </div>
+        <div class="meta" id="postMeta"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    MVP финального проекта курса по Claude Code · ИСЦ «Сентябрь» · Конвейер: аудит → план → пост
+  </footer>
+
+  <script>
+    let selectedMascot = 'alisa';
+    let currentAudit = null;
+
+    function selectMascot(key) {
+      selectedMascot = key;
+      document.querySelectorAll('.mascot-card').forEach(card => {
+        card.classList.toggle('active', card.dataset.mascot === key);
+      });
+      document.getElementById('step-generate').style.display = 'block';
+      document.getElementById('step-generate').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    selectMascot('alisa');
+
+    async function runAudit() {
+      const niche = document.getElementById('niche').value.trim();
+      const audience = document.getElementById('audience').value.trim();
+      const product = document.getElementById('product').value.trim();
+
+      if (!niche || !audience) {
+        alert('Заполни нишу и аудиторию');
+        return;
+      }
+
+      const btn = document.getElementById('auditBtn');
+      btn.disabled = true;
+      btn.textContent = 'Анализирую…';
+
+      try {
+        const response = await fetch('/audit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ niche, audience, product })
+        });
+        const data = await response.json();
+
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        currentAudit = data;
+
+        document.getElementById('auditTopics').innerHTML =
+          data.recommended_topics.map(t => `<li><button class="topic-pick" onclick="pickTopic('${t.replace(/'/g, "\\'")}')">${t} →</button></li>`).join('');
+
+        document.getElementById('auditLsi').innerHTML =
+          data.lsi_terms.map(term => `<span class="tag">${term}</span>`).join('');
+
+        document.getElementById('auditFormats').innerHTML =
+          data.formats.map(f => `<li>${f}</li>`).join('');
+
+        document.getElementById('auditAngle').textContent = data.angle;
+        document.getElementById('auditGap').textContent = data.gap;
+
+        document.getElementById('auditResult').classList.add('show');
+        document.getElementById('step-mascot').style.display = 'block';
+        document.getElementById('step-mascot').scrollIntoView({ behavior: 'smooth' });
+      } catch (e) {
+        alert('Не удалось выполнить аудит. Попробуй ещё раз.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔍 Сделать аудит';
+      }
+    }
+
+    function pickTopic(topic) {
+      document.getElementById('topic').value = topic;
+      document.getElementById('step-generate').style.display = 'block';
+      document.getElementById('step-generate').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function generatePost() {
+      const topic = document.getElementById('topic').value.trim();
+      if (!topic) {
+        alert('Введи тему поста');
+        return;
+      }
+
+      const btn = document.getElementById('generateBtn');
+      btn.disabled = true;
+      btn.textContent = 'Генерирую…';
+
+      try {
+        const response = await fetch('/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mascot: selectedMascot,
+            topic: topic,
+            lsi_terms: currentAudit ? currentAudit.lsi_terms : []
+          })
+        });
+        const data = await response.json();
+
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        document.getElementById('resultMascot').textContent = data.mascot;
+        document.getElementById('resultBadge').textContent = data.platform;
+        document.getElementById('postText').textContent = data.post;
+        document.getElementById('postMeta').innerHTML =
+          `Длина без пробелов: ${data.length} знаков · ` +
+          `LSI в тексте: ${data.lsi_used.join(', ')} · ` +
+          `Тон: ${data.tone}`;
+        document.getElementById('postResult').classList.add('show');
+      } catch (e) {
+        alert('Не удалось сгенерировать пост. Попробуй ещё раз.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✨ Сгенерировать пост';
+      }
+    }
+
+    function copyPost() {
+      const text = document.getElementById('postText').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Пост скопирован!');
+      });
+    }
+
+    document.getElementById('topic').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') generatePost();
+    });
+  </script>
+</body>
+</html>
