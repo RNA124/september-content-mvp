@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Презентация: Контент-фабрика «Сентябрь»</title>
+  <style>
+    :root {
+      --bg: #FFFDF7;
+      --ink: #1E1B22;
+      --muted: #6B6570;
+      --card: #FFFFFF;
+      --purple: #5B2C8D;
+      --purple-deep: #3A1A5E;
+      --gold: #C9A227;
+      --gold-light: #E3C567;
+      --azure: #4FA3D1;
+      --shadow: rgba(30, 27, 34, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #1E1B22;
+        --ink: #F4F1EA;
+        --muted: #A9A3AF;
+        --card: #2A2532;
+        --shadow: rgba(0, 0, 0, 0.24);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.6;
+    }
+
+    .slide {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .slide-inner {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .eyebrow {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      color: var(--purple);
+    }
+
+    p.lead {
+      font-size: 1.25rem;
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0 0 1.5rem;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, var(--purple-deep) 0%, var(--purple) 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px var(--shadow);
+    }
+
+    .hero-card .lead { color: rgba(255,255,255,0.85); }
+
+    .meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .meta span {
+      background: rgba(255,255,255,0.12);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 2rem;
+      box-shadow: 0 8px 30px var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .number {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .problem { border-left: 5px solid var(--gold); }
+    .solution { border-left: 5px solid var(--azure); }
+
+    .quote {
+      font-size: 1.35rem;
+      font-style: italic;
+      color: var(--muted);
+      border-left: 4px solid var(--purple);
+      padding-left: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+
+    .flow-step {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 1.2rem 1.6rem;
+      box-shadow: 0 6px 20px var(--shadow);
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-weight: 600;
+      text-align: center;
+      min-width: 160px;
+    }
+
+    .flow-arrow {
+      font-size: 1.6rem;
+      color: var(--gold);
+    }
+
+    .mascot-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .mascot {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 1.2rem;
+      text-align: center;
+      box-shadow: 0 6px 20px var(--shadow);
+    }
+
+    .mascot .icon {
+      font-size: 2.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .mascot h4 {
+      margin-bottom: 0.3rem;
+      font-size: 1rem;
+    }
+
+    .mascot p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .screenshot {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 30px var(--shadow);
+      text-align: center;
+      margin: 1.5rem 0;
+    }
+
+    .screenshot-placeholder {
+      background: linear-gradient(135deg, #f4f1f8 0%, #e8e2f0 100%);
+      border-radius: 12px;
+      padding: 4rem 2rem;
+      color: var(--muted);
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-weight: 600;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+      color: var(--purple-deep);
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-weight: 700;
+      padding: 0.9rem 1.6rem;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(201, 162, 39, 0.3);
+      margin-top: 1rem;
+    }
+
+    .plans {
+      list-style: none;
+      padding: 0;
+      margin: 1.5rem 0 0;
+    }
+
+    .plans li {
+      padding: 0.7rem 0 0.7rem 1.6rem;
+      position: relative;
+      border-bottom: 1px solid rgba(107, 101, 112, 0.15);
+    }
+
+    .plans li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    code {
+      background: rgba(91, 44, 141, 0.08);
+      padding: 0.15rem 0.4rem;
+      border-radius: 6px;
+      font-family: "SF Mono", Consolas, monospace;
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 560px) {
+      .hero-card { padding: 2rem; }
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+
+<main>
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="hero-card">
+        <div class="eyebrow">Финальный проект · Claude Code</div>
+        <h1>Контент-фабрика «Сентябрь»</h1>
+        <p class="lead">Генератор ВК-постов с аудитом тематики и голосами маскотов: Алиса, Арчи, Полина и Надежда Андреевна.</p>
+        <div class="meta">
+          <span>Python + Flask</span>
+          <span>Маркетинг / SMM</span>
+          <span>MVP</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Проблема</div>
+      <h2>Зачем этот проект?</h2>
+      <div class="card problem">
+        <p class="lead" style="margin:0">Когда ведёшь несколько площадок ВКонтакте от имени разных персонажей, каждый пост приходится собирать вручную: думать над темой, не смешивать голоса, помнить про перекрёстные ссылки и LSI-термины. Это рутина, которую можно упростить.</p>
+      </div>
+      <p>Курс по Claude Code задаётся вопросом: «какую реальную задачу я могу автоматизировать?». Мой ответ — ручная подготовка постов для бренд-персонажей.</p>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Решение</div>
+      <h2>Как работает сервис</h2>
+      <div class="flow">
+        <div class="flow-step">1. Аудит тематики<br><small style="color:var(--muted);font-weight:400">темы, LSI, форматы</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">2. Выбор маскота<br><small style="color:var(--muted);font-weight:400">4 голоса</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">3. Генерация поста<br><small style="color:var(--muted);font-weight:400">готовый текст + хештеги</small></div>
+      </div>
+      <div class="quote">«Сначала аудит, потом план, потом пост» — именно так устроен реальный конвейер в проекте.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Маскоты</div>
+      <h2>Четыре голоса — четыре аудитории</h2>
+      <div class="mascot-list">
+        <div class="mascot">
+          <div class="icon">🔵</div>
+          <h4>Алиса</h4>
+          <p>Эксперт-студентка, близкая подруга. Говорит на «ты».</p>
+        </div>
+        <div class="mascot">
+          <div class="icon">🟣</div>
+          <h4>Арчи</h4>
+          <p>Библиотечный кот, ироничный интеллектуал. ГОСТы и книги.</p>
+        </div>
+        <div class="mascot">
+          <div class="icon">👱</div>
+          <h4>Полина</h4>
+          <p>Продюсер маскотов. Кейсы, брендинг, за кулисами.</p>
+        </div>
+        <div class="mascot">
+          <div class="icon">👩‍🏫</div>
+          <h4>Надежда Андреевна</h4>
+          <p>Лицо ИСЦ. Профессионально, тепло, на «вы».</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Демонстрация</div>
+      <h2>Что видит пользователь</h2>
+      <div class="screenshot">
+        <div class="screenshot-placeholder">
+          Скриншот интерфейса: форма аудита → рекомендации → карточки маскотов → сгенерированный пост
+          <br><br>
+          <small>Добавь сюда реальные скриншоты после локального запуска</small>
+        </div>
+      </div>
+      <p style="text-align:center;color:var(--muted)">Локальный запуск: <code>python app.py</code> → <code>http://127.0.0.1:5000</code></p>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Результаты</div>
+      <h2>Что получается на выходе</h2>
+      <div class="grid">
+        <div class="card solution">
+          <div class="number">01</div>
+          <h3>Готовый пост</h3>
+          <p>В правильном голосе маскота, с хештегами и перекрёстными ссылками.</p>
+        </div>
+        <div class="card solution">
+          <div class="number">02</div>
+          <h3>Рекомендации по теме</h3>
+          <p>Темы, LSI-термины, форматы, угол и пробел в контенте.</p>
+        </div>
+        <div class="card solution">
+          <div class="number">03</div>
+          <h3>Проверка длины</h3>
+          <p>Выводится длина поста без пробелов — важно для ВКонтакте.</p>
+        </div>
+        <div class="card solution">
+          <div class="number">04</div>
+          <h3>Копирование в один клик</h3>
+          <p>Пост можно сразу скопировать и вставить в редактор ВК.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">GitHub</div>
+      <h2>Репозиторий и технологии</h2>
+      <div class="card">
+        <p><strong>Стек:</strong> Python 3.11+, Flask 3.0.3, HTML5/CSS3, vanilla JavaScript.</p>
+        <p><strong>Структура:</strong> Flask-приложение, модуль аудита, шаблоны и стили в одной папке. Без npm и сборщиков — MVP работает локально.</p>
+        <p><strong>README</strong> оформлен по структуре курса: проблема, пользователь, функция, формат результата, минимальный функционал, технологии, запуск.</p>
+        <p><strong>Скилл проекта</strong> лежит в <code>.claude/SKILL.md</code> — инструкция для Claude Code, как работать с репозиторием.</p>
+      </div>
+      <a class="cta" href="https://github.com/RNA124/september-content-mvp" target="_blank" rel="noopener">🔗 Открыть репозиторий на GitHub</a>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Планы</div>
+      <h2>Что дальше?</h2>
+      <ul class="plans">
+        <li>Подключить внешний LLM для более гибкой генерации постов.</li>
+        <li>Добавить сохранение истории аудитов и постов в файл или базу.</li>
+        <li>Сделать экспорт готовых постов в Markdown или CSV.</li>
+        <li>Расширить аудит: интеграция с анализом конкурентов и семантикой.</p>
+      </ul>
+      <p style="margin-top:2rem;color:var(--muted)">Самое ценное в проекте — не генератор текста, а сам конвейер: аудит → план → пост. Именно он решает реальную рутинную задачу.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Контент-фабрика «Сентябрь» · MVP финального проекта курса по Claude Code · RNA124
+</footer>
+
+</body>
+</html>
